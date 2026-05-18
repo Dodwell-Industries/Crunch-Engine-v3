@@ -36,8 +36,8 @@ void Renderer3D::draw(Mesh* mesh, Camera* cam) {
     glUseProgram(shaderProgram);
 
     glUniformMatrix4fv(modlLoc, 1, GL_FALSE, glm::value_ptr(mesh->model));
-    glUniformMatrix4fv(viewLoc,  1, GL_FALSE, glm::value_ptr(cam->view));
-    glUniformMatrix4fv(projLoc,  1, GL_FALSE, glm::value_ptr(cam->projection));
+    glUniformMatrix4fv(viewLoc,  1, GL_FALSE, glm::value_ptr(cam->cdata.view));
+    glUniformMatrix4fv(projLoc,  1, GL_FALSE, glm::value_ptr(cam->cdata.projection));
 
     glBindVertexArray(mesh->VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

@@ -24,7 +24,7 @@ int main() {
 
     Crunch::Mesh mesh;
     Crunch::Camera camera;
-    camera.init(CRUNCH_CAMERA_TYPE_PERSPECTIVE);
+    camera.init(CRUNCH_CAMERA_TYPE_PERSPECTIVE, 800.f / 600.f, 45.f, 0.01f, 1000.f);
 
     std::vector<struct Crunch::Vertex> vertices;
     std::vector<uint32_t> indices;

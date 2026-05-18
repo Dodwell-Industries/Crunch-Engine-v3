@@ -9,11 +9,23 @@
 namespace Crunch {
 
 class Camera {
-public:
-    bool init(int type);
+private:
+    struct CameraData {
+        glm::vec3 up;
+        glm::vec3 forward;
+        glm::vec3 position;
 
-    glm::mat4 view;
-    glm::mat4 projection;
+        float fovy;
+        float aspect;
+        float zNear;
+        float zFar;
+
+        glm::mat4 view;
+        glm::mat4 projection;
+    };
+public:
+    bool init(int type, float aspect, float fov, float zn, float zf);
+    struct CameraData cdata;            // Camera data contains core camera vectors and the view/projection matrices
 };
 
 };
