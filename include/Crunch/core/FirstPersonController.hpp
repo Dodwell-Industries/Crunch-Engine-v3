@@ -44,6 +44,10 @@ private:
     };
     struct AspectRatio aspect;
 
+    float jumpForce = 10.f;
+    float gravity = 9.81f;
+    float ground = 2.0f;
+
 public:
     FirstPersonController(Camera* c, Window* w, float x, float y);
     void update(float dt, float speed);
@@ -51,6 +55,7 @@ public:
 
     struct KeyMap keymap;       // This will hold the keymap for the controller
     struct ControllerCoreData coredata;
+    bool isOnGround;
 };
 
 };

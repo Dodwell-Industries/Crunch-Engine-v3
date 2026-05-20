@@ -1,3 +1,4 @@
+#include "glm/fwd.hpp"
 #include <Crunch/Crunch.hpp>
 #include <Crunch/core/Window.hpp>
 #include <Crunch/core/renderer/Renderer3D.hpp>
@@ -44,24 +45,22 @@ int main() {
     Crunch::FirstPersonController fpc(&camera, &window, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT);
 
     /* Sample mesh */
+    Crunch::Texture texture;
+    if (!texture.load("assets/Checkerboard.png")) {
+        printf("failed to load texture\n");
+    }
+
     Crunch::Mesh mesh;
     Crunch::Shapes::Quad ground_plane_data(1.f, 1.f, glm::vec3(0), glm::vec4(1.0f));
+    mesh.setTexture(&texture, renderer.shaderProgram);
     mesh.create(ground_plane_data.vertices, ground_plane_data.indices, ground_plane_data.position, ground_plane_data.color);
+    mesh.setScale(glm::vec3(100.f, 0.f, 100.f));
+    mesh.setRotation(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     for (auto& v : ground_plane_data.vertices) {
         printf("pos: %.1f %.1f %.1f | uv: %.1f %.1f\n",
             v.position.x, v.position.y, v.position.z,
             v.texCoord.x, v.texCoord.y);
-    }
-
-    printf("offsetof position: %zu\n", offsetof(Crunch::Vertex, position));
-    // printf("offsetof color: %zu\n", offsetof(Crunch::Vertex, color));
-    printf("offsetof texCoord: %zu\n", offsetof(Crunch::Vertex, texCoord));
-    printf("sizeof Vertex: %zu\n", sizeof(Crunch::Vertex));
-
-    Crunch::Texture texture;
-    if (!texture.load("assets/Crunch.png")) {
-        printf("failed to load texture\n");
     }
 
     /*
@@ -81,13 +80,12 @@ int main() {
         float dt = currentTime - lastTime;
         lastTime = currentTime;
 
-        fpc.update(dt, 3.0f);
+        fpc.update(dt, 5.0f);
 
         // Clear the screen to a nice color
         window.clear(glm::vec4(0));
 
         // Draw the mesh we created
-        mesh.setTexture(&texture, renderer.shaderProgram);
         renderer.draw(&mesh, &camera);
 
         // Update the window (poll events and swap buffers)

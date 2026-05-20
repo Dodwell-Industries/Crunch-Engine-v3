@@ -14,7 +14,7 @@ FirstPersonController::FirstPersonController(Camera* c, Window* w, float x, floa
     aspect.x = x;
     aspect.y = y;
 
-    coredata.cameraPos = glm::vec3(0, 0, 3.0f);
+    coredata.cameraPos = glm::vec3(0, 2.0f, 3.0f);
     coredata.cameraTarget = glm::vec3(0);
     coredata.cameraDirection = glm::normalize(coredata.cameraPos - coredata.cameraTarget);
 
@@ -26,6 +26,9 @@ FirstPersonController::FirstPersonController(Camera* c, Window* w, float x, floa
     coredata.cameraUp = coredata.up;
 
     camera->cdata.view = glm::lookAt(coredata.cameraPos, coredata.cameraPos + coredata.cameraFront, coredata.cameraUp);
+
+    // Start on the ground
+    isOnGround = true;
 
     // Initialize the keymap to the defaults
     keymap.forward = GLFW_KEY_W;
@@ -59,12 +62,12 @@ void FirstPersonController::update(float dt, float speed) {
     if (glfwGetKey(window->getWindow(), keymap.forward) == GLFW_PRESS) {
         // Move the camera forward
         // Multiple by delta time (dt), so that movement is frame independant
-        coredata.cameraPos += cameraSpeed * coredata.cameraFront * dt;
+        coredata.cameraPos += cameraSpeed * glm::vec3(coredata.cameraFront.x, 0.f, coredata.cameraFront.z) * dt;
     }
     if (glfwGetKey(window->getWindow(), keymap.backwards) == GLFW_PRESS) {
         // Move the camera backwards
         // Multiple by delta time (dt), so that movement is frame independant
-        coredata.cameraPos -= cameraSpeed * coredata.cameraFront * dt;
+        coredata.cameraPos -= cameraSpeed * glm::vec3(coredata.cameraFront.x, 0.f, coredata.cameraFront.z) * dt;
     }
     if (glfwGetKey(window->getWindow(), keymap.left) == GLFW_PRESS) {
         // Move the camera left
@@ -78,15 +81,24 @@ void FirstPersonController::update(float dt, float speed) {
         // Normalize the value, so that we don't move in weird directions and it feels more natural
         coredata.cameraPos += glm::normalize(glm::cross(coredata.cameraFront, coredata.cameraUp)) * cameraSpeed * dt;
     }
-    if (glfwGetKey(window->getWindow(), keymap.up) == GLFW_PRESS) {
-        // Move the camera up
-        // Multiple by delta time (dt), so that movement is frame independant
-        coredata.cameraPos.y += cameraSpeed * dt;
-    }
-    if (glfwGetKey(window->getWindow(), keymap.down) == GLFW_PRESS) {
-        // Move the camera down
-        // Multiple by delta time (dt), so that movement is frame independant
-        coredata.cameraPos.y -= cameraSpeed * dt;
+    // if (glfwGetKey(window->getWindow(), keymap.up) == GLFW_PRESS) {
+    //     // Move the camera up
+    //     // Multiple by delta time (dt), so that movement is frame independant
+    //     coredata.cameraPos.y += cameraSpeed * dt;
+    // }
+    // if (glfwGetKey(window->getWindow(), keymap.down) == GLFW_PRESS) {
+    //     // Move the camera down
+    //     // Multiple by delta time (dt), so that movement is frame independant
+    //     coredata.cameraPos.y -= cameraSpeed * dt;
+    // }
+
+    /*
+        Jump and gravity controller
+    */
+    if (isOnGround) {
+        if (glfwGetKey(window->getWindow(), keymap.up) == GLFW_PRESS) {
+            // Jump
+        }
     }
 
     // Update the cameras view matrix every frame

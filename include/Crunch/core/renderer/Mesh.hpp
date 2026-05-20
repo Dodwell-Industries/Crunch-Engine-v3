@@ -1,6 +1,7 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
+#include "glm/fwd.hpp"
 #include <Crunch/core/Texture.hpp>
 #include <glm/glm.hpp>
 #include <vector>
@@ -21,6 +22,9 @@ private:
 public:
     void create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs, glm::vec3 pos, glm::vec2 color);
     void setTexture(Texture* tex, uint32_t prog);
+    void setRotation(float degrees, glm::vec3 axis);
+    void setPosition(glm::vec3 newPos);
+    void setScale(glm::vec3 newScale);
 
     std::vector<struct Vertex> vertices;
     std::vector<uint32_t> indices;

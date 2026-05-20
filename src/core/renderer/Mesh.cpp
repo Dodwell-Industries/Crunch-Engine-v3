@@ -1,3 +1,4 @@
+#include "glm/trigonometric.hpp"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -50,6 +51,18 @@ void Mesh::setTexture(Texture* tex, uint32_t prog) {
     glUniform1i(glGetUniformLocation(prog, "tex"), 0);
     glActiveTexture(GL_TEXTURE0);
     tex->bind();
+}
+
+void Mesh::setRotation(float degrees, glm::vec3 axis) {
+    model = glm::rotate(model, glm::radians(degrees), axis);
+}
+
+void Mesh::setPosition(glm::vec3 newPos) {
+    model = glm::translate(model, newPos);
+}
+
+void Mesh::setScale(glm::vec3 newScale) {
+    model = glm::scale(model, newScale);
 }
 
 };
