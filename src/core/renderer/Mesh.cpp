@@ -1,10 +1,10 @@
-#include "glm/ext/matrix_transform.hpp"
-#include "glm/fwd.hpp"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <Crunch/core/renderer/Mesh.hpp>
 #include <cstdint>
 #include <vector>
+#include <cstddef>
 
 namespace Crunch {
 
@@ -30,8 +30,26 @@ void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs, 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // Position attribute (location = 0)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
     glEnableVertexAttribArray(0);
+
+    // Color attribute (location = 1)
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(1);
+
+    // Texture attribute (location = 2)
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void Mesh::setTexture(Texture* tex, uint32_t prog) {
+    glUniform1i(glGetUniformLocation(prog, "tex"), 0);
+    glActiveTexture(GL_TEXTURE0);
+    tex->bind();
 }
 
 };

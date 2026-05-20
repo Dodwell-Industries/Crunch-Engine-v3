@@ -38,9 +38,15 @@ private:
     Camera* camera;
     Window* window;
 
+    struct AspectRatio {
+        float x;
+        float y;
+    };
+    struct AspectRatio aspect;
+
 public:
-    FirstPersonController(Camera* c, Window* w);
-    void update(float dt);
+    FirstPersonController(Camera* c, Window* w, float x, float y);
+    void update(float dt, float speed);
     void mouseCallback(double xpos, double ypos);
 
     struct KeyMap keymap;       // This will hold the keymap for the controller

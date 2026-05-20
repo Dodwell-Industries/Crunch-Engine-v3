@@ -6,12 +6,18 @@
 #include <Crunch/core/Camera.hpp>
 #include <Crunch/core/renderer/Shapes.hpp>
 #include <Crunch/core/FirstPersonController.hpp>
+#include <Crunch/core/Texture.hpp>
 #include <cstdint>
+
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 800
 
 int main() {
     Crunch::Window window;
     if (!window.init()) return -1;
-    window.create(800, 600, "Crunch Engine Version 3 | Demo");
+    window.create(WINDOW_WIDTH, WINDOW_HEIGHT, "Crunch Engine Version 3 | Demo");
+
+    float aspect = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
 
     /* 
         Shader setup
@@ -34,13 +40,29 @@ int main() {
 
     /* Perspective camera setup. Note the CRUNCH_CAMERA_TYPE_PERSPECTIVE */
     Crunch::Camera camera;
-    camera.init(CRUNCH_CAMERA_TYPE_PERSPECTIVE, 800.f / 600.f, 45.f, 0.01f, 1000.f);
-    Crunch::FirstPersonController fpc(&camera, &window);
+    camera.init(CRUNCH_CAMERA_TYPE_PERSPECTIVE, aspect, 45.f, 0.01f, 1000.f);
+    Crunch::FirstPersonController fpc(&camera, &window, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT);
 
     /* Sample mesh */
     Crunch::Mesh mesh;
-    Crunch::Shapes::Quad ground_plane_data(1.f, 1.f, glm::vec3(0), glm::vec2(1.0f));
+    Crunch::Shapes::Quad ground_plane_data(1.f, 1.f, glm::vec3(0), glm::vec4(1.0f));
     mesh.create(ground_plane_data.vertices, ground_plane_data.indices, ground_plane_data.position, ground_plane_data.color);
+
+    for (auto& v : ground_plane_data.vertices) {
+        printf("pos: %.1f %.1f %.1f | uv: %.1f %.1f\n",
+            v.position.x, v.position.y, v.position.z,
+            v.texCoord.x, v.texCoord.y);
+    }
+
+    printf("offsetof position: %zu\n", offsetof(Crunch::Vertex, position));
+    // printf("offsetof color: %zu\n", offsetof(Crunch::Vertex, color));
+    printf("offsetof texCoord: %zu\n", offsetof(Crunch::Vertex, texCoord));
+    printf("sizeof Vertex: %zu\n", sizeof(Crunch::Vertex));
+
+    Crunch::Texture texture;
+    if (!texture.load("assets/Crunch.png")) {
+        printf("failed to load texture\n");
+    }
 
     /*
         Main game loop
@@ -59,12 +81,13 @@ int main() {
         float dt = currentTime - lastTime;
         lastTime = currentTime;
 
-        fpc.update(dt);
+        fpc.update(dt, 3.0f);
 
         // Clear the screen to a nice color
-        window.clear(glm::vec4(0.2f, 0.3f, 0.3f, 1.0f));
+        window.clear(glm::vec4(0));
 
         // Draw the mesh we created
+        mesh.setTexture(&texture, renderer.shaderProgram);
         renderer.draw(&mesh, &camera);
 
         // Update the window (poll events and swap buffers)

@@ -27,7 +27,7 @@ bool Camera::init(int type, float aspect, float fov, float zn, float zf) {
         return false;
     }
 
-    cdata.view = glm::lookAt(glm::vec3(5.0f, 0.0f, 5.0f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
+    cdata.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
     return true;
 }
 

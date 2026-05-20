@@ -10,7 +10,7 @@ namespace Crunch::Shapes {
 
 class Quad {
 public:
-    Quad(float w, float h, glm::vec3 p, glm::vec2 c);
+    Quad(float w, float h, glm::vec3 p, glm::vec4 c);
 
     float width;
     float height;

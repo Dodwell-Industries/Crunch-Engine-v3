@@ -7,10 +7,12 @@
 
 namespace Crunch {
 
-FirstPersonController::FirstPersonController(Camera* c, Window* w) {
+FirstPersonController::FirstPersonController(Camera* c, Window* w, float x, float y) {
 
     camera = c;
     window = w;
+    aspect.x = x;
+    aspect.y = y;
 
     coredata.cameraPos = glm::vec3(0, 0, 3.0f);
     coredata.cameraTarget = glm::vec3(0);
@@ -30,14 +32,16 @@ FirstPersonController::FirstPersonController(Camera* c, Window* w) {
     keymap.backwards = GLFW_KEY_S;
     keymap.left = GLFW_KEY_A;
     keymap.right = GLFW_KEY_D;
+    keymap.up = GLFW_KEY_SPACE;
+    keymap.down = GLFW_KEY_LEFT_SHIFT;
 
 
     glfwSetInputMode(window->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     coredata.yaw = -90.0f;
     coredata.pitch = 0.0f;
     coredata.firstMouse = true;
-    coredata.lastX = 400.0f;
-    coredata.lastY = 300.0f;
+    coredata.lastX = aspect.x / 2;
+    coredata.lastY = aspect.y / 2;
 
     // Register the mouse callback with GLFW
     glfwSetWindowUserPointer(window->getWindow(), this);
@@ -47,10 +51,10 @@ FirstPersonController::FirstPersonController(Camera* c, Window* w) {
     });
 }
 
-void FirstPersonController::update(float dt) {
+void FirstPersonController::update(float dt, float speed) {
     // Controller speed
     // Update as required
-    const float cameraSpeed = 5.f;
+    const float cameraSpeed = speed;
 
     if (glfwGetKey(window->getWindow(), keymap.forward) == GLFW_PRESS) {
         // Move the camera forward
@@ -74,6 +78,16 @@ void FirstPersonController::update(float dt) {
         // Normalize the value, so that we don't move in weird directions and it feels more natural
         coredata.cameraPos += glm::normalize(glm::cross(coredata.cameraFront, coredata.cameraUp)) * cameraSpeed * dt;
     }
+    if (glfwGetKey(window->getWindow(), keymap.up) == GLFW_PRESS) {
+        // Move the camera up
+        // Multiple by delta time (dt), so that movement is frame independant
+        coredata.cameraPos.y += cameraSpeed * dt;
+    }
+    if (glfwGetKey(window->getWindow(), keymap.down) == GLFW_PRESS) {
+        // Move the camera down
+        // Multiple by delta time (dt), so that movement is frame independant
+        coredata.cameraPos.y -= cameraSpeed * dt;
+    }
 
     // Update the cameras view matrix every frame
     // Without this, values will update but nothing will move!
@@ -92,7 +106,7 @@ void FirstPersonController::mouseCallback(double xpos, double ypos) {
     coredata.lastX = xpos;
     coredata.lastY = ypos;
 
-    const float sensitivity = 0.1f;
+    const float sensitivity = 0.05f;
     xoffset *= sensitivity;
     yoffset *= sensitivity;
 
