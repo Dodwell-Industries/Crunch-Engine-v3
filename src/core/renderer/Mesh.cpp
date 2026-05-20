@@ -1,3 +1,4 @@
+#include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -7,7 +8,7 @@
 
 namespace Crunch {
 
-void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs) {
+void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs, glm::vec3 pos, glm::vec2 color) {
     // Create the mesh here, and fill in the vertices and indices
     vertices = verts;
     indices = idxs;
@@ -15,7 +16,8 @@ void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs) 
     vcount = vertices.size();
     icount = indices.size();
 
-    model = glm::mat4(1.0f);        // Identity matrix. No transforms
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, pos);
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

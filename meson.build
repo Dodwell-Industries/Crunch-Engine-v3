@@ -1,4 +1,9 @@
-project('Crunch Engine 3', 'cpp', 'c')
+project('Crunch Engine 3', 'cpp', 'c',
+    version: '3.0.1',
+    default_options: [
+        'cpp_std=c++17',
+        'c_std=c11'
+    ])
 
 # Include folders
 include_dir = include_directories('include')
@@ -15,7 +20,9 @@ crunch = both_libraries('crunch',
         'src/core/renderer/Renderer3D.cpp',
         'src/core/renderer/Mesh.cpp',
         'src/core/renderer/Shader.cpp',
+        'src/core/renderer/Shapes.cpp',
         'src/core/Camera.cpp',
+        'src/core/FirstPersonController.cpp',
 
         'deps/glad/src/glad.c',
     ],

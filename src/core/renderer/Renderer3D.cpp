@@ -18,16 +18,21 @@ bool Renderer3D::init(uint32_t vs, uint32_t fs) {
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
 
+    int success;
+    char log[512];
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, log);
+        printf("shader link error: %s\n", log);
+    }
+
     glUseProgram(shaderProgram);
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    modlLoc = glGetUniformLocation(shaderProgram, "modl");
+    modlLoc = glGetUniformLocation(shaderProgram, "model");
     viewLoc = glGetUniformLocation(shaderProgram, "view");
-    projLoc = glGetUniformLocation(shaderProgram, "proj");
+    projLoc = glGetUniformLocation(shaderProgram, "projection");
 
     return true;
 }

@@ -22,6 +22,7 @@ public:
     bool windowShouldClose();
     void update();
     void clear(glm::vec4 color);
+    void terminate();
 
     GLFWwindow* getWindow();
 };

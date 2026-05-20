@@ -1,3 +1,4 @@
+#include "Crunch/core/renderer/Shader.hpp"
 #include <Crunch/core/Window.hpp>
 #include <GLFW/glfw3.h>
 #include <cstddef>
@@ -11,16 +12,16 @@ bool Window::init() {
         std::cout << "error: fatal: failed to initialize GLFW" << std::endl;
         return false;
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);      // OpenGL Version 3.3 Core
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);      // OpenGL Version 4.1 Core
 
     /*
         Most system will work fine, but Apple depreciated OpenGL in 2019,
         so we enable forward compatibility to make sure it works properly without fault
     */
 #if __APPLE__
-    glfwWindowHint(GLFW_OPENGL_COMPAT_PROFILE, GLFW_OPENGL_FORWARD_COMPAT);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif      // __APPLE__
 
     return true;
@@ -50,6 +51,7 @@ void Window::create(int w, int h, const char* title) {
 
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
 
     // Set the framebuffer size callback
     // This function is called every time the window is resized
@@ -78,6 +80,12 @@ void Window::clear(glm::vec4 color) {
 GLFWwindow* Window::getWindow() {
     // Just return the window type
     return _window;
+}
+
+void Window::terminate() {
+    // Destroy the window, clean up, and destroy the OpenGL context
+    glfwDestroyWindow(_window);
+    glfwTerminate();
 }
 
 
