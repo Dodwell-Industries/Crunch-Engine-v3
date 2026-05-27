@@ -24,11 +24,12 @@ FirstPersonController::FirstPersonController(Camera* c, Window* w, float x, floa
 
     coredata.cameraFront = glm::vec3(0, 0, -1.0f);
     coredata.cameraUp = coredata.up;
+    coredata.velocity = glm::vec3(0.0f);
 
     camera->cdata.view = glm::lookAt(coredata.cameraPos, coredata.cameraPos + coredata.cameraFront, coredata.cameraUp);
 
     // Start on the ground
-    isOnGround = true;
+    // isOnGround = true;
 
     // Initialize the keymap to the defaults
     keymap.forward = GLFW_KEY_W;
@@ -52,57 +53,63 @@ FirstPersonController::FirstPersonController(Camera* c, Window* w, float x, floa
         auto* fpc = static_cast<FirstPersonController*>(glfwGetWindowUserPointer(w));
         if (fpc) fpc->mouseCallback(xpos, ypos);
     });
+
+    // Setup the rigid body for proper physics and collisions
+    body = new Physics::RigidBody();
+    body->mass = 1.0f;
+    body->inv_mass = 1.0f;
+    body->position = coredata.cameraPos;
 }
 
 void FirstPersonController::update(float dt, float speed) {
-    // Controller speed
-    // Update as required
-    const float cameraSpeed = speed;
+    glm::vec3 wishDir(0.0f);
 
     if (glfwGetKey(window->getWindow(), keymap.forward) == GLFW_PRESS) {
-        // Move the camera forward
-        // Multiple by delta time (dt), so that movement is frame independant
-        coredata.cameraPos += cameraSpeed * glm::vec3(coredata.cameraFront.x, 0.f, coredata.cameraFront.z) * dt;
+        wishDir += glm::vec3(coredata.cameraFront.x, 0.f, coredata.cameraFront.z);
     }
     if (glfwGetKey(window->getWindow(), keymap.backwards) == GLFW_PRESS) {
-        // Move the camera backwards
-        // Multiple by delta time (dt), so that movement is frame independant
-        coredata.cameraPos -= cameraSpeed * glm::vec3(coredata.cameraFront.x, 0.f, coredata.cameraFront.z) * dt;
+        wishDir -= glm::vec3(coredata.cameraFront.x, 0.f, coredata.cameraFront.z);
     }
     if (glfwGetKey(window->getWindow(), keymap.left) == GLFW_PRESS) {
-        // Move the camera left
-        // Multiple by delta time (dt), so that movement is frame independant
-        // Normalize the value, so that we don't move in weird directions and it feels more natural
-        coredata.cameraPos -= glm::normalize(glm::cross(coredata.cameraFront, coredata.cameraUp)) * cameraSpeed * dt;
+        wishDir -= glm::normalize(glm::cross(coredata.cameraFront, coredata.cameraUp));
     }
     if (glfwGetKey(window->getWindow(), keymap.right) == GLFW_PRESS) {
-        // Move the camera right
-        // Multiple by delta time (dt), so that movement is frame independant
-        // Normalize the value, so that we don't move in weird directions and it feels more natural
-        coredata.cameraPos += glm::normalize(glm::cross(coredata.cameraFront, coredata.cameraUp)) * cameraSpeed * dt;
+        wishDir += glm::normalize(glm::cross(coredata.cameraFront, coredata.cameraUp));
     }
-    // if (glfwGetKey(window->getWindow(), keymap.up) == GLFW_PRESS) {
-    //     // Move the camera up
-    //     // Multiple by delta time (dt), so that movement is frame independant
-    //     coredata.cameraPos.y += cameraSpeed * dt;
-    // }
-    // if (glfwGetKey(window->getWindow(), keymap.down) == GLFW_PRESS) {
-    //     // Move the camera down
-    //     // Multiple by delta time (dt), so that movement is frame independant
-    //     coredata.cameraPos.y -= cameraSpeed * dt;
-    // }
+    if (glm::length(wishDir) > 0.0f) {
+        wishDir = glm::normalize(wishDir);
+    }
 
-    /*
-        Jump and gravity controller
-    */
-    if (isOnGround) {
-        if (glfwGetKey(window->getWindow(), keymap.up) == GLFW_PRESS) {
-            // Jump
-        }
+
+    // Sprint
+    float oldSpeed = speed;
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+        oldSpeed = speed;
+        speed *= 2;
+    } else {
+        speed = oldSpeed;
     }
+
+    // Jump
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS && isOnGround) {
+        body->velocity.y = jumpForce;
+        isOnGround = false;
+    }
+
+    if (body->position.y <= 0.0f) {
+        isOnGround = true;
+    } else {
+        isOnGround = false;
+    }
+
+    // Calculate & apply force
+    glm::vec3 force = wishDir * speed * 10.0f;
+    body->ApplyForce(force);
 
     // Update the cameras view matrix every frame
     // Without this, values will update but nothing will move!
+    coredata.cameraPos = body->position;
+    coredata.cameraPos.y = body->position.y + 1.8f;
     camera->cdata.view = glm::lookAt(coredata.cameraPos, coredata.cameraPos + coredata.cameraFront, coredata.cameraUp);
 }
 

@@ -26,6 +26,10 @@ crunch = both_libraries('crunch',
         'src/core/FirstPersonController.cpp',
         'src/core/Texture.cpp',
 
+        'src/physics/RigidBody.cpp',
+        'src/physics/Physics.cpp',
+        'src/physics/Collision.cpp',
+
         'deps/glad/src/glad.c',
     ],
     dependencies: [glfw_dep, glm_dep],

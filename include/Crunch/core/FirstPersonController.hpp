@@ -3,6 +3,7 @@
 
 #include <Crunch/core/Camera.hpp>
 #include <Crunch/core/Window.hpp>
+#include <Crunch/physics/RigidBody.hpp>
 #include <glm/glm.hpp>
 
 namespace Crunch {
@@ -28,6 +29,8 @@ private:
         glm::vec3 up;
         glm::vec3 cameraRight;
 
+        glm::vec3 velocity;
+
         float yaw;
         float pitch;
         bool firstMouse;
@@ -44,9 +47,7 @@ private:
     };
     struct AspectRatio aspect;
 
-    float jumpForce = 10.f;
-    float gravity = 9.81f;
-    float ground = 2.0f;
+    float jumpForce = 50.f;
 
 public:
     FirstPersonController(Camera* c, Window* w, float x, float y);
@@ -56,6 +57,7 @@ public:
     struct KeyMap keymap;       // This will hold the keymap for the controller
     struct ControllerCoreData coredata;
     bool isOnGround;
+    Physics::RigidBody* body;
 };
 
 };

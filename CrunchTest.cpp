@@ -1,3 +1,5 @@
+#include "Crunch/physics/Physics.hpp"
+#include "Crunch/physics/RigidBody.hpp"
 #include "glm/fwd.hpp"
 #include <Crunch/Crunch.hpp>
 #include <Crunch/core/Window.hpp>
@@ -57,11 +59,8 @@ int main() {
     mesh.setScale(glm::vec3(100.f, 0.f, 100.f));
     mesh.setRotation(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-    for (auto& v : ground_plane_data.vertices) {
-        printf("pos: %.1f %.1f %.1f | uv: %.1f %.1f\n",
-            v.position.x, v.position.y, v.position.z,
-            v.texCoord.x, v.texCoord.y);
-    }
+    Crunch::Physics::PhysicsHandler physics;
+    Crunch::Physics::RigidBody rb;
 
     /*
         Main game loop
@@ -80,7 +79,8 @@ int main() {
         float dt = currentTime - lastTime;
         lastTime = currentTime;
 
-        fpc.update(dt, 5.0f);
+        fpc.update(dt, 7.5f);
+        physics.UpdatePhysics(fpc.body, dt);
 
         // Clear the screen to a nice color
         window.clear(glm::vec4(0));
