@@ -27,6 +27,7 @@ crunch = both_libraries('crunch',
         'src/core/FlyCamera.cpp',
         'src/core/Texture.cpp',
         'src/core/renderer/MeshRegistry.cpp',
+        'src/Noise.cpp',
 
         'src/core/renderer/Matrix/Matrix.cpp',
 

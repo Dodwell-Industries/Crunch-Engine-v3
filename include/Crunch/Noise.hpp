@@ -14,30 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SHAPES_HPP
-#define SHAPES_HPP
+#ifndef NOISE_HPP
+#define NOISE_HPP
 
-#include <Crunch/core/renderer/Mesh.hpp>
 #include <cstdint>
-#include <vector>
-#include <glm/glm.hpp>
 
-namespace Crunch::Shapes {
+namespace Crunch::TerrainTools {
 
-class Quad {
-public:
-    Quad(float w, float h, glm::vec3 p, glm::vec4 c);
+float GenerateIndividualNoiseValue(uint32_t seed, float x, float y);
 
-    float width;
-    float height;
-    glm::vec2 color;
-    glm::vec3 position;
-    glm::vec2 size;
+}
 
-    std::vector<struct Crunch::Vertex> vertices;
-    std::vector<uint32_t> indices;
-};
 
-};
-
-#endif      // SHAPES_HPP
+#endif      // NOISE_HPP

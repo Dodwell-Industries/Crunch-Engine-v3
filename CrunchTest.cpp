@@ -1,4 +1,19 @@
-#include "Crunch/core/FlyCamera.hpp"
+/*
+ * Crunch Engine 3
+ * Copyright 2026 Dodwell Industries
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include <Crunch/Crunch.hpp>
 #include <Crunch/core/Window.hpp>
 #include <Crunch/core/renderer/Renderer3D.hpp>
@@ -11,6 +26,7 @@
 #include <Crunch/physics/Physics.hpp>
 #include <Crunch/physics/RigidBody.hpp>
 #include <Crunch/core/renderer/Matrix/Matrix.hpp>
+#include <Crunch/core/FlyCamera.hpp>
 #include <cstdint>
 
 #define WINDOW_WIDTH 1280
@@ -54,15 +70,18 @@ int main() {
         printf("failed to load texture\n");
     }
 
-    Crunch::Mesh mesh;
-    Crunch::Shapes::Quad ground_plane_data(1.f, 1.f, glm::vec3(0), glm::vec4(1.0f));
-    mesh.setTexture(&texture, renderer.shaderProgram);
-    mesh.create(ground_plane_data.vertices, ground_plane_data.indices, ground_plane_data.position, ground_plane_data.color);
-    mesh.setScale(glm::vec3(100.f, 0.f, 100.f));
-    mesh.setRotation(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-
     // Crunch::Physics::PhysicsHandler physics;
-    Crunch::Physics::RigidBody rb;
+    // Crunch::Physics::RigidBody rb;
+
+    Crunch::Shapes::Quad quad(64.0f, 64.0f, glm::vec3(0), glm::vec4(1.0f));
+    Crunch::Mesh mesh;
+    mesh.create(quad.vertices, quad.indices, quad.position, quad.color);
+    mesh.setRotation(90.0f, glm::vec3(1.0f, 0, 0));
+    mesh.setTexture(&texture, renderer.shaderProgram);
+    Crunch::Registry::MeshRegistry::appendToRegistry(mesh.VAO, mesh.EBO, mesh.VBO, mesh.icount, mesh.vcount);
+    
+    std::vector<Crunch::Mesh*> meshes;
+    meshes.push_back(&mesh);
 
     /*
         Main game loop
@@ -72,8 +91,6 @@ int main() {
             - Clear
             - Render
     */
-    std::vector<Crunch::Mesh*> meshes;
-    meshes.push_back(&mesh);
     float lastTime = glfwGetTime();
     while (!window.windowShouldClose()) {
         // Calculate delta time (∆T)
