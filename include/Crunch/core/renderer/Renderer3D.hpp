@@ -6,14 +6,15 @@
 #include <Crunch/core/renderer/Mesh.hpp>
 #include <Crunch/core/renderer/Shader.hpp>
 #include <Crunch/core/Camera.hpp>
+#include <Crunch/core/renderer/Matrix/Matrix.hpp>
 
 namespace Crunch {
 
 class Renderer3D {
 private:
 public:
-    bool init(uint32_t vs, uint32_t fs);
-    void draw(Mesh* mesh, Camera* cam);
+    bool Init(uint32_t vs, uint32_t fs);
+    void Draw(Matrix::RenderList* list);
 
     unsigned int shaderProgram;
     unsigned int vertexShader;

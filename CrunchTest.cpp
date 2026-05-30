@@ -1,6 +1,3 @@
-#include "Crunch/physics/Physics.hpp"
-#include "Crunch/physics/RigidBody.hpp"
-#include "glm/fwd.hpp"
 #include <Crunch/Crunch.hpp>
 #include <Crunch/core/Window.hpp>
 #include <Crunch/core/renderer/Renderer3D.hpp>
@@ -10,6 +7,9 @@
 #include <Crunch/core/renderer/Shapes.hpp>
 #include <Crunch/core/FirstPersonController.hpp>
 #include <Crunch/core/Texture.hpp>
+#include <Crunch/physics/Physics.hpp>
+#include <Crunch/physics/RigidBody.hpp>
+#include <Crunch/core/renderer/Matrix/Matrix.hpp>
 #include <cstdint>
 
 #define WINDOW_WIDTH 1280
@@ -39,7 +39,7 @@ int main() {
         This lets the GPU know what to draw and how to draw it
     */
     Crunch::Renderer3D renderer;
-    renderer.init(vs, fs);
+    renderer.Init(vs, fs);
 
     /* Perspective camera setup. Note the CRUNCH_CAMERA_TYPE_PERSPECTIVE */
     Crunch::Camera camera;
@@ -70,6 +70,8 @@ int main() {
             - Clear
             - Render
     */
+    std::vector<Crunch::Mesh*> meshes;
+    meshes.push_back(&mesh);
     float lastTime = glfwGetTime();
     while (!window.windowShouldClose()) {
         // Calculate delta time (∆T)
@@ -86,7 +88,9 @@ int main() {
         window.clear(glm::vec4(0));
 
         // Draw the mesh we created
-        renderer.draw(&mesh, &camera);
+        Crunch::Matrix::FrameData frame_data = { .projection=camera.cdata.projection, .view=camera.cdata.view };
+        Crunch::Matrix::RenderList list = Crunch::Matrix::Build(meshes, &frame_data);
+        renderer.Draw(&list);
 
         // Update the window (poll events and swap buffers)
         window.update();

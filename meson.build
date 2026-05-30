@@ -25,6 +25,9 @@ crunch = both_libraries('crunch',
         'src/core/Camera.cpp',
         'src/core/FirstPersonController.cpp',
         'src/core/Texture.cpp',
+        'src/core/renderer/MeshRegistry.cpp',
+
+        'src/core/renderer/Matrix/Matrix.cpp',
 
         'src/physics/RigidBody.cpp',
         'src/physics/Physics.cpp',
