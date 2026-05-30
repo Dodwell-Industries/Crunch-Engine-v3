@@ -1,8 +1,8 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
-#include "glm/fwd.hpp"
 #include <Crunch/core/Texture.hpp>
+#include <Crunch/core/renderer/MeshRegistry.hpp>
 #include <glm/glm.hpp>
 #include <vector>
 #include <cstdint>

@@ -1,3 +1,4 @@
+#include "Crunch/core/renderer/MeshRegistry.hpp"
 #include "glm/trigonometric.hpp"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -45,6 +46,8 @@ void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs, 
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    Registry::MeshRegistry::appendToRegistry(VAO, EBO, VBO, icount, vcount);
 }
 
 void Mesh::setTexture(Texture* tex, uint32_t prog) {

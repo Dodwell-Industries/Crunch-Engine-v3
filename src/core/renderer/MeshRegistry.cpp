@@ -4,6 +4,21 @@
 namespace Crunch::Registry::MeshRegistry {
 
 std::vector<struct Mesh_GPU_Data> mesh_data;        // The actual mesh registry
+int mesh_data_count = 0;
+
+void appendToRegistry(uint32_t vao, uint32_t ebo, uint32_t vbo, uint32_t idx, uint32_t vdx) {
+    struct Mesh_GPU_Data newMeshGpuData;
+    newMeshGpuData.id = mesh_data_count++;
+
+    newMeshGpuData.vao = vao;
+    newMeshGpuData.ebo = ebo;
+    newMeshGpuData.vbo = vbo;
+
+    newMeshGpuData.idx_count = idx;
+    newMeshGpuData.vdx_count = vdx;
+
+    mesh_data.push_back(newMeshGpuData);
+}
 
 uint32_t resolveVAO(uint32_t id) {
     // Loop over every mesh entry to find the mesh with correct ID

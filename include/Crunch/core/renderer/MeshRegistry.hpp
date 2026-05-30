@@ -17,6 +17,7 @@ struct Mesh_GPU_Data {
 };
 
 extern std::vector<struct Mesh_GPU_Data> mesh_data;
+extern int mesh_data_count;
 
 uint32_t resolveVAO(uint32_t id);
 uint32_t resolveIDX(uint32_t id);

@@ -1,3 +1,4 @@
+#include "Crunch/core/FlyCamera.hpp"
 #include <Crunch/Crunch.hpp>
 #include <Crunch/core/Window.hpp>
 #include <Crunch/core/renderer/Renderer3D.hpp>
@@ -44,7 +45,8 @@ int main() {
     /* Perspective camera setup. Note the CRUNCH_CAMERA_TYPE_PERSPECTIVE */
     Crunch::Camera camera;
     camera.init(CRUNCH_CAMERA_TYPE_PERSPECTIVE, aspect, 45.f, 0.01f, 1000.f);
-    Crunch::FirstPersonController fpc(&camera, &window, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT);
+    // Crunch::FirstPersonController fpc(&camera, &window, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT);
+    Crunch::FlyCamera fly_cam(&camera, &window, (float)WINDOW_WIDTH, (float)WINDOW_HEIGHT);
 
     /* Sample mesh */
     Crunch::Texture texture;
@@ -59,7 +61,7 @@ int main() {
     mesh.setScale(glm::vec3(100.f, 0.f, 100.f));
     mesh.setRotation(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-    Crunch::Physics::PhysicsHandler physics;
+    // Crunch::Physics::PhysicsHandler physics;
     Crunch::Physics::RigidBody rb;
 
     /*
@@ -81,15 +83,16 @@ int main() {
         float dt = currentTime - lastTime;
         lastTime = currentTime;
 
-        fpc.update(dt, 7.5f);
-        physics.UpdatePhysics(fpc.body, dt);
+        // fpc.update(dt, 7.5f);
+        // physics.UpdatePhysics(fpc.body, dt);
+        fly_cam.update(dt);
 
         // Clear the screen to a nice color
         window.clear(glm::vec4(0));
 
         // Draw the mesh we created
         Crunch::Matrix::FrameData frame_data = { .projection=camera.cdata.projection, .view=camera.cdata.view };
-        Crunch::Matrix::RenderList list = Crunch::Matrix::Build(meshes, &frame_data);
+        auto list = Crunch::Matrix::Build(meshes, &frame_data);
         renderer.Draw(&list);
 
         // Update the window (poll events and swap buffers)
