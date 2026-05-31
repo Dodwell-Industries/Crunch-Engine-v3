@@ -91,20 +91,20 @@ int main() {
 
     /* Sample mesh */
     Crunch::Texture texture;
-    if (!texture.load("assets/Checkerboard.png")) {
+    if (!texture.load("assets/Ground.jpg")) {
         printf("failed to load texture\n");
     }
 
     // Crunch::Physics::PhysicsHandler physics;
     // Crunch::Physics::RigidBody rb;
 
-    Crunch::Shapes::Quad quad(16.0f, 16.0f, glm::vec3(0), glm::vec4(1.0f));
+    Crunch::Shapes::Quad quad(8.0f, 8.0f, glm::vec3(0), glm::vec4(1.0f));
     std::vector<Crunch::Mesh> meshes;
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    for (float x = 0; x < 128.0f; x += 16.0f) {        // 16x16px chunk size
-        for (float y = 0; y < 128.0f; y += 16.0f) {
+    for (float x = 0; x < 256.0f; x += 8.0f) {        // 16x16px chunk size
+        for (float y = 0; y < 256.0f; y += 8.0f) {
             // 8x8 grid of "chunks" (64 total chunks)
             Crunch::Mesh mesh;
             mesh.create(quad.vertices, quad.indices);
@@ -114,7 +114,7 @@ int main() {
             mesh.setTexture(&texture, renderer.shaderProgram);
 
             // Subdivide the mesh with a depth of 8 (Each quad gets subdivided 8 times)
-            Crunch::Matrix::Subdivide(&mesh, 8);
+            Crunch::Matrix::Subdivide(&mesh, 4);
 
             DisplaceTerrainVertices(mesh, 01234567);
             mesh.updateBuffers(mesh.vertices, mesh.indices);
