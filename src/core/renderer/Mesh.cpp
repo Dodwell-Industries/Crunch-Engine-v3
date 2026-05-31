@@ -81,6 +81,7 @@ void Mesh::setRotation(float degrees, glm::vec3 axis) {
 void Mesh::setPosition(glm::vec3 newPos) {
     // model = glm::mat4(1.0f);
     model = glm::translate(model, newPos);
+    position = newPos;
 }
 
 void Mesh::setScale(glm::vec3 newScale) {

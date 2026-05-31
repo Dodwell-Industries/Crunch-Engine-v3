@@ -14,15 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <Crunch/Noise.hpp>
-#include <cmath>
-#include <cstdint>
+#ifndef FRUSTUM_CULLING_HPP
+#define FRUSTUM_CULLING_HPP
 
-namespace Crunch::TerrainTools {
+#include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
+#include <glm/glm.hpp>
 
-float GenerateIndividualNoiseValue(uint32_t seed, float x, float y) {
-    float noise = std::sin(x * 0.1f) * std::cos(y * 0.1f) * 5.0f;
-    return noise;
+namespace Crunch::Matrix {
+
+struct Plane {
+    glm::vec3 normal;
+    float distance;
+
+    void Normalize() {
+        float length = glm::length(normal);
+        normal /= length;
+        distance /= length;
+    }
+};
+
+struct Frustum {
+    // 6 planes
+    // Near, far, left, right, top, bottom
+    struct Plane planes[6];
+};
+
+struct Frustum ExtractFrustum(const glm::mat4& vp);
+bool IsObjectInFrustum(const Frustum *fr, const glm::vec3& pos, float size);
+
 }
 
-}
+#endif      // FRUSTUM_CULLING_HPP

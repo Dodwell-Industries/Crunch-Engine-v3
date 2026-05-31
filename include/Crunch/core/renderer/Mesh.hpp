@@ -52,6 +52,8 @@ public:
     unsigned int VBO;
     unsigned int EBO;
     glm::mat4 model;
+
+    glm::vec3 position;
 };
 
 };

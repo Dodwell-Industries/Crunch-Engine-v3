@@ -14,21 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <Crunch/core/renderer/Matrix/MatrixFrustumCulling.hpp>
 #include <Crunch/core/renderer/Matrix/Matrix.hpp>
 
 namespace Crunch::Matrix {
 
-RenderList Build(const std::vector<Mesh> meshes, const struct FrameData* frame) {
+RenderList Build(const std::vector<Mesh>& meshes, const struct FrameData* frame) {
     RenderList list;
     list.id_count = 0;
 
-    for (auto& mesh : meshes) {
-        DrawCommand newCommand;
-        newCommand.model = mesh.model;
-        newCommand.meshID = mesh.id;
-        newCommand.materialID = 0;
+    glm::mat4 viewProjection = frame->projection * frame->view;
+    struct Frustum cameraFrustum = ExtractFrustum(viewProjection);
 
-        list.commands.push_back(newCommand);
+    for (const auto& mesh : meshes) {
+        if (IsObjectInFrustum(&cameraFrustum, mesh.position, 16.0f)) {
+            DrawCommand newCommand;
+            newCommand.meshID = mesh.id;
+            newCommand.materialID = 0;
+            newCommand.model = mesh.model;                  // Crunch doesn't have support for Materials just yet
+
+            list.commands.push_back(newCommand);
+        }
     }
 
     list.frame_data = frame;

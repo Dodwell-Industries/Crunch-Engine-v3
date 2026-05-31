@@ -50,7 +50,7 @@ struct RenderList {
     int id_count;
 };
 
-RenderList Build(const std::vector<Mesh> meshes, const FrameData* frame);
+RenderList Build(const std::vector<Mesh>& meshes, const FrameData* frame);
 
 };
 

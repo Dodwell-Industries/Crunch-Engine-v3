@@ -31,6 +31,7 @@ crunch = both_libraries('crunch',
 
         'src/core/renderer/Matrix/Matrix.cpp',
         'src/core/renderer/Matrix/MatrixSubdivide.cpp',
+        'src/core/renderer/Matrix/MatrixFrustumCulling.cpp',
 
         'src/physics/RigidBody.cpp',
         'src/physics/Physics.cpp',

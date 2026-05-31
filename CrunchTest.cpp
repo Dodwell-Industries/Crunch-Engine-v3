@@ -28,11 +28,34 @@
 #include <Crunch/core/renderer/Matrix/Matrix.hpp>
 #include <Crunch/core/renderer/Matrix/MatrixSubdivide.hpp>
 #include <Crunch/core/FlyCamera.hpp>
+#include <Crunch/Noise.hpp>
 #include <cstdint>
-#include <iostream>
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 800
+
+// main.cpp - Gameplay-level system
+void DisplaceTerrainVertices(Crunch::Mesh& mesh, uint32_t seed) {
+    // The gameplay code reads the engine's public translation states
+    glm::vec3 chunkWorldPos = mesh.position;
+
+    for (auto& vertex : mesh.vertices) {
+        // Calculate continuous world space coordinates
+        // Local Y maps to World Z due to the 90-degree X-rotation template
+        float worldX = chunkWorldPos.x + vertex.position.x;
+        float worldZ = chunkWorldPos.z + vertex.position.y;
+
+        // Sample your gameplay noise function
+        float height = Crunch::TerrainTools::GenerateIndividualNoiseValue(seed, worldX, worldZ);
+
+        // Displace the vertex along its local perpendicular axis
+        vertex.position.z = height;
+
+        // Simple height-based color mapping for a clean look
+        float norm = (height + 5.0f) / 10.0f;
+        vertex.color = glm::vec4(0.1f, norm * 0.6f + 0.2f, 0.1f, 1.0f);
+    }
+}
 
 int main() {
     Crunch::Window window;
@@ -80,8 +103,8 @@ int main() {
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    for (float x = 0; x < 32.0f; x += 16.0f) {        // 64x64px chunk size
-        for (float y = 0; y < 32.0f; y += 16.0f) {
+    for (float x = 0; x < 128.0f; x += 16.0f) {        // 16x16px chunk size
+        for (float y = 0; y < 128.0f; y += 16.0f) {
             // 8x8 grid of "chunks" (64 total chunks)
             Crunch::Mesh mesh;
             mesh.create(quad.vertices, quad.indices);
@@ -93,12 +116,11 @@ int main() {
             // Subdivide the mesh with a depth of 8 (Each quad gets subdivided 8 times)
             Crunch::Matrix::Subdivide(&mesh, 8);
 
+            DisplaceTerrainVertices(mesh, 01234567);
+            mesh.updateBuffers(mesh.vertices, mesh.indices);
+
             meshes.push_back(mesh);
         }
-    }
-
-    for (auto& m : meshes) {
-        std::cout << "ID: " << m.id << std::endl;
     }
 
     /*
