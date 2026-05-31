@@ -34,7 +34,6 @@
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 800
 
-// main.cpp - Gameplay-level system
 void DisplaceTerrainVertices(Crunch::Mesh& mesh, uint32_t seed) {
     // The gameplay code reads the engine's public translation states
     glm::vec3 chunkWorldPos = mesh.position;
