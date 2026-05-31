@@ -38,6 +38,7 @@ extern int mesh_data_count;
 uint32_t resolveVAO(uint32_t id);
 uint32_t resolveIDX(uint32_t id);
 uint32_t appendToRegistry(uint32_t vao, uint32_t ebo, uint32_t vbo, uint32_t idx, uint32_t vdx);
+void updateRegistryAtID(uint32_t id, uint32_t vao, uint32_t vbo, uint32_t ebo, uint32_t idx, uint32_t vdx);
 
 };
 

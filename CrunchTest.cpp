@@ -26,6 +26,7 @@
 #include <Crunch/physics/Physics.hpp>
 #include <Crunch/physics/RigidBody.hpp>
 #include <Crunch/core/renderer/Matrix/Matrix.hpp>
+#include <Crunch/core/renderer/Matrix/MatrixSubdivide.hpp>
 #include <Crunch/core/FlyCamera.hpp>
 #include <cstdint>
 #include <iostream>
@@ -77,36 +78,24 @@ int main() {
     Crunch::Shapes::Quad quad(16.0f, 16.0f, glm::vec3(0), glm::vec4(1.0f));
     std::vector<Crunch::Mesh> meshes;
 
-    Crunch::Mesh m1;
-    Crunch::Mesh m2;
-
-    m1.create(quad.vertices, quad.indices);
-    m2.create(quad.vertices, quad.indices);
-
-    m1.setTexture(&texture, renderer.shaderProgram);
-    m2.setTexture(&texture, renderer.shaderProgram);
-
-    m1.setPosition(glm::vec3(16.f, 0, 0));
-    m2.setPosition(glm::vec3(0, 0, 0));
-
-    meshes.push_back(m1);
-    meshes.push_back(m2);
-
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    // for (float x = 0; x < 128.0f; x += 64.0f) {        // 64x64px chunk size
-    //     for (float y = 0; y < 128.0f; y += 64.0f) {
-    //         // 8x8 grid of "chunks" (64 total chunks)
-    //         Crunch::Mesh mesh;
-    //         mesh.create(quad.vertices, quad.indices);
-    //         mesh.resetModel();
-    //         mesh.setPosition(glm::vec3(x, 0.0f, y));
-    //         // mesh.setRotation(90.0f, glm::vec3(1.0f, 0, 0));
-    //         mesh.setTexture(&texture, renderer.shaderProgram);
+    for (float x = 0; x < 32.0f; x += 16.0f) {        // 64x64px chunk size
+        for (float y = 0; y < 32.0f; y += 16.0f) {
+            // 8x8 grid of "chunks" (64 total chunks)
+            Crunch::Mesh mesh;
+            mesh.create(quad.vertices, quad.indices);
+            mesh.resetModel();
+            mesh.setPosition(glm::vec3(x, 0.0f, y));
+            mesh.setRotation(90.0f, glm::vec3(1.0f, 0, 0));
+            mesh.setTexture(&texture, renderer.shaderProgram);
 
-    //         meshes.push_back(mesh);
-    //     }
-    // }
+            // Subdivide the mesh with a depth of 8 (Each quad gets subdivided 8 times)
+            Crunch::Matrix::Subdivide(&mesh, 8);
+
+            meshes.push_back(mesh);
+        }
+    }
 
     for (auto& m : meshes) {
         std::cout << "ID: " << m.id << std::endl;

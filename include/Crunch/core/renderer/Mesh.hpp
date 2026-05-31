@@ -39,6 +39,7 @@ public:
     void setPosition(glm::vec3 newPos);
     void setScale(glm::vec3 newScale);
     void resetModel();
+    void updateBuffers(const std::vector<Vertex>& verts, const std::vector<uint32_t>& inds);
 
     std::vector<struct Vertex> vertices;
     std::vector<uint32_t> indices;

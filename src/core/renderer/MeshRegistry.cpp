@@ -37,6 +37,22 @@ uint32_t appendToRegistry(uint32_t vao, uint32_t ebo, uint32_t vbo, uint32_t idx
     return newMeshGpuData.id;
 }
 
+void updateRegistryAtID(uint32_t id, uint32_t vao, uint32_t vbo, uint32_t ebo, uint32_t idx, uint32_t vdx) {
+    
+    for (int i = 0; i < mesh_data.size(); i++) {
+        if (i == id) {
+            mesh_data[i].vao = vao;
+            mesh_data[i].vbo = vbo;
+            mesh_data[i].ebo = ebo;
+
+            mesh_data[i].idx_count = idx;
+            mesh_data[i].vdx_count = vdx;
+
+            return;
+        }
+    }
+}
+
 uint32_t resolveVAO(uint32_t id) {
     // Loop over every mesh entry to find the mesh with correct ID
     // Once found, return the VAO back to the user

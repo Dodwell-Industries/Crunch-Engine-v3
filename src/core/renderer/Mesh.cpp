@@ -79,12 +79,47 @@ void Mesh::setRotation(float degrees, glm::vec3 axis) {
 }
 
 void Mesh::setPosition(glm::vec3 newPos) {
-    model = glm::mat4(1.0f);
+    // model = glm::mat4(1.0f);
     model = glm::translate(model, newPos);
 }
 
 void Mesh::setScale(glm::vec3 newScale) {
     model = glm::scale(model, newScale);
+}
+
+void Mesh::updateBuffers(const std::vector<Vertex>& verts, const std::vector<uint32_t>& inds) {
+    this->vertices = verts;
+    this->indices = inds;
+    this->icount = inds.size();
+    this->vcount = verts.size();
+
+    // Re-bind the existing VAO/VBO/EBO handles and just push the new data size
+    glBindVertexArray(this->VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
+
+    // Position attribute (location = 0)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+    glEnableVertexAttribArray(0);
+
+    // Color attribute (location = 1)
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(1);
+
+    // Texture attribute (location = 2)
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    // Update the MeshRegistry so Matrix knows that a change has occured
+    // Without this, the renderer won't actually render anything
+    Registry::MeshRegistry::updateRegistryAtID(id, this->VAO, this->VBO, this->EBO, this->icount, this->vcount);
 }
 
 };
