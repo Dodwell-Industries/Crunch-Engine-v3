@@ -33,16 +33,19 @@ struct Vertex {
 
 class Mesh {
 public:
-    void create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs, glm::vec3 pos, glm::vec2 color);
+    void create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs);
     void setTexture(Texture* tex, uint32_t prog);
     void setRotation(float degrees, glm::vec3 axis);
     void setPosition(glm::vec3 newPos);
     void setScale(glm::vec3 newScale);
+    void resetModel();
 
     std::vector<struct Vertex> vertices;
     std::vector<uint32_t> indices;
     uint32_t vcount;                // How many vertices in the vector
     uint32_t icount;                // How many indices in the vector
+
+    uint32_t id;
 
     unsigned int VAO;
     unsigned int VBO;

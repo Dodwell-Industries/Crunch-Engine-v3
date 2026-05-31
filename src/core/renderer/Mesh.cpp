@@ -25,7 +25,7 @@
 
 namespace Crunch {
 
-void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs, glm::vec3 pos, glm::vec2 color) {
+void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs) {
     // Create the mesh here, and fill in the vertices and indices
     vertices = verts;
     indices = idxs;
@@ -34,7 +34,6 @@ void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs, 
     icount = indices.size();
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, pos);
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -62,7 +61,7 @@ void Mesh::create(std::vector<struct Vertex> verts, std::vector<uint32_t> idxs, 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    Registry::MeshRegistry::appendToRegistry(VAO, EBO, VBO, icount, vcount);
+    id = Registry::MeshRegistry::appendToRegistry(VAO, EBO, VBO, icount, vcount);
 }
 
 void Mesh::setTexture(Texture* tex, uint32_t prog) {
@@ -71,11 +70,16 @@ void Mesh::setTexture(Texture* tex, uint32_t prog) {
     tex->bind();
 }
 
+void Mesh::resetModel() {
+    model = glm::mat4(1.0f);        // Identity matrix - no transforms
+}
+
 void Mesh::setRotation(float degrees, glm::vec3 axis) {
     model = glm::rotate(model, glm::radians(degrees), axis);
 }
 
 void Mesh::setPosition(glm::vec3 newPos) {
+    model = glm::mat4(1.0f);
     model = glm::translate(model, newPos);
 }
 

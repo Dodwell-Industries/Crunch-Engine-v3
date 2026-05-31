@@ -23,6 +23,7 @@
 #include <Crunch/core/renderer/Shader.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <cstdint>
+#include <iostream>
 
 namespace Crunch {
 
@@ -61,12 +62,18 @@ void Renderer3D::Draw(Matrix::RenderList* list) {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(list->frame_data->view));
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(list->frame_data->projection));
 
-    for (int i = 0; i <= list->id_count; i++) {
+    for (int i = 0; i < list->commands.size(); i++) {
         glUniformMatrix4fv(modlLoc, 1, GL_FALSE, glm::value_ptr(list->commands[i].model));
         
         uint32_t idx_count = Registry::MeshRegistry::resolveIDX(list->commands[i].meshID);
+        uint32_t vao = Registry::MeshRegistry::resolveVAO(list->commands[i].meshID);
+        if (vao == 0) {
+            // If resolveVAO returns 0, it means that the mesh with correct ID could not be found
+            // Therefore an error needs to be thrown
+            std::cout << "Invalid VAO!" << std::endl;
+        }
 
-        glBindVertexArray(Registry::MeshRegistry::resolveVAO(list->commands[i].meshID));
+        glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, idx_count, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }

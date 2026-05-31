@@ -18,14 +18,14 @@
 
 namespace Crunch::Matrix {
 
-RenderList Build(const std::vector<Mesh*> meshes, const struct FrameData* frame) {
+RenderList Build(const std::vector<Mesh> meshes, const struct FrameData* frame) {
     RenderList list;
     list.id_count = 0;
 
     for (auto& mesh : meshes) {
         DrawCommand newCommand;
-        newCommand.model = mesh->model;
-        newCommand.meshID = 0;
+        newCommand.model = mesh.model;
+        newCommand.meshID = mesh.id;
         newCommand.materialID = 0;
 
         list.commands.push_back(newCommand);
