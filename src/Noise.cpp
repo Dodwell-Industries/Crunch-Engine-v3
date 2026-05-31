@@ -15,14 +15,24 @@
  * limitations under the License.
  */
 #include <Crunch/Noise.hpp>
-#include <cmath>
+#include <FastNoiseLite.h>
 #include <cstdint>
 
 namespace Crunch::TerrainTools {
 
+static FastNoiseLite noiseGenerator;
+
+void InitializeNoise(uint32_t seed) {
+    noiseGenerator.SetSeed(seed);
+    noiseGenerator.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+}
+
 float GenerateIndividualNoiseValue(uint32_t seed, float x, float y) {
-    float noise = std::sin(x * 0.1f) * std::cos(y * 0.1f) * 5.0f;
-    return noise;
+    // Note: If you want to change seed per-call, you'd update it here, 
+    // but usually, you set the seed once globally or per-chunk.
+    
+    // GetNoise returns a float between -1.0 and 1.0
+    return noiseGenerator.GetNoise(x, y);
 }
 
 }

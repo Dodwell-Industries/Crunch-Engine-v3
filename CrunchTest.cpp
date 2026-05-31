@@ -45,13 +45,14 @@ void DisplaceTerrainVertices(Crunch::Mesh& mesh, uint32_t seed) {
         float worldZ = chunkWorldPos.z + vertex.position.y;
 
         // Sample your gameplay noise function
-        float height = Crunch::TerrainTools::GenerateIndividualNoiseValue(seed, worldX, worldZ);
+        float height = 4.f;
+        float y = height * Crunch::TerrainTools::GenerateIndividualNoiseValue(seed, worldX, worldZ);
 
         // Displace the vertex along its local perpendicular axis
-        vertex.position.z = height;
+        vertex.position.z = y;
 
         // Simple height-based color mapping for a clean look
-        float norm = (height + 5.0f) / 10.0f;
+        float norm = (y + 5.0f) / 10.0f;
         vertex.color = glm::vec4(0.1f, norm * 0.6f + 0.2f, 0.1f, 1.0f);
     }
 }
@@ -100,7 +101,7 @@ int main() {
     Crunch::Shapes::Quad quad(16.0f, 16.0f, glm::vec3(0), glm::vec4(1.0f));
     std::vector<Crunch::Mesh> meshes;
 
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     for (float x = 0; x < 128.0f; x += 16.0f) {        // 16x16px chunk size
         for (float y = 0; y < 128.0f; y += 16.0f) {
@@ -141,7 +142,7 @@ int main() {
 
         // fpc.update(dt, 7.5f);
         // physics.UpdatePhysics(fpc.body, dt);
-        fly_cam.update(dt, 5.0f);
+        fly_cam.update(dt, 25.0f);
 
         // Clear the screen to a nice color
         window.clear(glm::vec4(0));
